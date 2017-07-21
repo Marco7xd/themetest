@@ -38,7 +38,7 @@ register_nav_menus( array(
 add_action( 'init', 'bornholm_menus' );
 
 
-<?php /* ist doch jetzt überflüssig oder stephan weil oben php geöffnet wird!!!!!!!!!!!!!!! */
+
 /**
  * Displays the header for normal posts
  *
@@ -315,3 +315,86 @@ function bornholm_get_gallery_images( $post_id ) {
  
     return $images;
 }
+
+
+
+add_image_size( 'bornholm_large_gallery_image_for_single_view', 1592, 9999, false );
+
+/* http://t3n.de/news/wordpress-theme-einzelansicht-single-php-651782/2/ FALLS WAS MIT DER GALLERY NICHT FUNTZT */
+
+
+/**
+ * Displays the header of a gallery.
+ * If there are $images, the function displays the title with an image.
+ * If not, only the title is displayed.
+ *
+ * @param $heading, $images, $size
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_gallery_header( $heading, $images, $size, $post ) {
+    if ( $images ) {
+        bornholm_gallery_title( $heading, $images, $size, $post );
+    } else {
+        bornholm_post_title( $heading, $post );
+    }
+}
+
+/**
+ * Displays the title of a gallery with an image.
+ *
+ * @param $heading, $images, $size
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_gallery_title( $heading, $images, $size, $post ) {
+    if ( $size != 'bornholm_large_gallery_image_for_single_view' ) { ?>
+        <a href="<?php echo esc_url( get_permalink( $post->ID ) ); ?>">
+    <?php }
+    if ( ! $heading == '' ) {
+        echo '<' . $heading . ' class="entry-title gallery-title">';
+        echo esc_html( $post->post_title );
+        echo '</' . $heading . '>';
+    }
+    bornholm_gallery_featured_image( $size, $images, $post );
+    if ( $size != 'bornholm_large_gallery_image_for_single_view' ) { ?>
+        </a>
+    <?php }
+}
+
+/**
+ * Displays the featured image of a gallery
+ *
+ * @param $size, $images
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_gallery_featured_image( $size, $images, $post ) {
+    $image         = array_shift( $images );
+    $image_img_tag = wp_get_attachment_image( $image->ID, $size ); ?>
+    <figure class="gallery-thumb clearfix">
+        <?php if ( has_post_thumbnail( $post->ID ) ) {
+            echo get_the_post_thumbnail( $post->ID, $size );
+        } else {
+            echo $image_img_tag;
+        } ?>
+    </figure>
+<?php
+}
+/**
+ * Displays navigation for paginated posts
+ *
+ * @return string Formatted output in HTML.
+ */
+function bornholm_paginated_posts_navigation() {
+    wp_link_pages( array(
+        'before'           => '<ul class="page-link">',
+        'after'            => '</ul>',
+        'link_before'      => '<li>',
+        'link_after'       => '</li>',
+    ) );
+}
+
+
+
+

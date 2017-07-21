@@ -14,3 +14,13 @@
             bornholm_the_post_header( 'h1', $post );
         } ?>
     </header>
+
+
+            comments_template( '', true );
+        } ?>
+    </main>
+<?php if ( $format == 'gallery' ) {
+} else {
+    get_sidebar();
+}
+get_footer();
